@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Telegram Mini</title>
+    <link rel="stylesheet" href="./css/main.css">
+    <style type="text/tailwindcss"></style>
+</head>
+<body>
+
+    <div id="Wrapper" class="  wrapper relative">
+
+    <!-- modal start -->
+     <div class="telegram-wrapp hidden rounded-[7px] text-start  items-start justify-center modalcha  flex flex-col gap-3 h-[100px] w-[140px] bg-white">
+         <div class=" absolute  telegram-modal w-full  ">
+             <button onclick="FN()" class=" hover:bg-slate-200 p-2  w-full flex gap-4 items-center justify-start text-start ">
+                 <i class=" text-red-500 fa-solid fa-trash-can"></i>
+                 <p>Delete</p>
+             </button>
+             <button onclick="FN()" class=" hover:bg-slate-200 p-2 w-full  flex gap-4 items-center justify-start text-start ">
+                <i class=" text-[#918989a2] fa-solid fa-pencil"></i>
+                 <p>Edit</p>
+             </button>
+         </div>
+     </div>
+
+    <!-- modal end -->
+<ul class="  list p-2 pr-[20px] relative h-[100%] flex flex-col-reverse justify-start pb-[70px] gap-[10px] overflow-y-auto ">
+ </ul>
+
+
+    <form class=" message-form absolute bottom-[10px] w-[95%] justify-center items-center ml-[18px]" autocomplete="off">
+        <div class="bg-white rounded-[25px] w-full p-3 ">
+            <input name="message" class="outline-none w-[85%]" type="text" placeholder="Message">
+        </div>
+        <div class="absolute flex gap-[13px]  right-[10px] bottom-[10px]">
+            <label>
+                <input class=" choose-img hidden" type="file">
+                <img src="./images/clip.svg" alt="Telegram img" width="30" height="30"> 
+            </label>
+            <button>
+                <img src="./images/telegram.svg" alt="Telegram img" width="30" height="30"> 
+            </button>
+        </div>
+    </form>
+</div>
+
+
+    
+
+<script src="https://kit.fontawesome.com/cbac79a5af.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <script src="./js/main.js"></script>
+</body>
+</html>
