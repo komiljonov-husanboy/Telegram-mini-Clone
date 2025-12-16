@@ -1,33 +1,16 @@
+
 let elList = document.querySelector(".list")
 let elForm = document.querySelector(".message-form")
 let elChooseImg = document.querySelector(".choose-img")
-
-let elModalWrap = document.querySelector(".telegram-wrapp")
-let elModalInn = document.querySelector(".telegram-modal")
+let elAudioBtn = document.querySelector(".audio-btn")
+let elVideoBtn = document.querySelector(".video-btn")
+let videoPrev = document.getElementById("video-preview")
+let videoRec;
+let videBox = [];
+let audioBox = [];
 
 let messageList = get("message") || []
  
-
-
-
-
-
-// Modal code start
-
-function AutoShowModal(active) {
-    if (active) {
-        elModalWrap.classList.remove("hidden")
-        elModalWrap.classList.remove("scale-[0]")
-        elModalWrap.classList.add("scale-[1]")
-    }else{
-          elModalWrap.classList.add("scale-[0]")
-        elModalWrap.classList.remove("scale-[1]")
-    }
-}
-elModalWrap.addEventListener("click" , (evt)=> evt.target.id == "Wrapper" && AutoShowModal())
-//Modal code end
-AutoShowModal()
-
 
 
 
@@ -69,7 +52,28 @@ function renderMessage(arr , list) {
         </div>
     </li>
         `
-        }else{
+        }else if (item.audio) {
+                  elItem.outerHTML = `
+     <li  class=" relative    telegram-box bg-[#77cf8cff] ml-auto p-2 rounded-tl-[18px] rounded-bl-[18px] rounded-tr-[15px]  text-white text-shadow-md text-[16px] w-[80%]    ">
+        <div class=" flex items-center justify-end gap-2  text-green-700 text-end text-[13px]">
+           <audio controls src="${item.audio}" class="w-full"></audio> <div class="flex items-center justify-end gap-2 text-green-700 text-end text-[13px]">
+            <span>${item.creatAt}</span>
+             <img src=" ./images/check.svg" width="20"/>
+
+        </div>
+    </li>
+        `
+        }
+        else if (item.video) {
+    elItem.outerHTML = `
+    <li class="relative telegram-box bg-[#77cf8cff] ml-auto p-2 rounded-tl-[18px] rounded-bl-[18px] rounded-tr-[15px] text-white h-[340px] w-[310px]">
+        <video controls src="${item.video}" class=" rounded-full  h-[300px] border-[1px] border-green-500   w-[300px] rounded-[15px]"></video> <div class="flex items-center justify-end gap-2 text-green-700 text-end text-[13px]">
+            <span>${item.creatAt}</span>
+            <img src="./images/check.svg" width="20"/>
+        </div>
+    </li>`
+}
+        else{
 
             elItem.outerHTML = `
             <li class=" relative   telegram-box bg-[#77cf8cff] ml-auto p-2 rounded-tl-[18px] rounded-bl-[18px] rounded-tr-[15px]  text-white text-shadow-md text-[16px] w-[80%]    ">
@@ -84,7 +88,7 @@ function renderMessage(arr , list) {
     });
 }
 renderMessage(messageList , elList)
-set("message" , messageList)
+set("message" , messageList)    
 // render message end
 
 
@@ -102,7 +106,9 @@ elForm.addEventListener("submit" , (evt)=> {
     evt.preventDefault()
     
     let date = new Date()
-    const Time  = ` ${date.toString().split(" ")[4].split(":")[0]}:${date.toString().split(" ")[4].split(":")[1]}`
+    let hour = date.getHours()
+    let minutes = date.getMinutes()
+    const Time  = `${hour}:${minutes}`
    const Data = {
     id: messageList[messageList.length -1]?.id ? messageList[messageList.length -1]?.id + 1 : 1,
     image:urlImg,
@@ -112,6 +118,103 @@ elForm.addEventListener("submit" , (evt)=> {
    messageList.push(Data)
 renderMessage(messageList , elList)
 set("message" , messageList)
-   urlImg =null
+   urlImg =null     
    evt.target.reset()
 })
+
+//============ start Audio rec
+elAudioBtn.addEventListener("mousedown", async ()=>{
+ const stream = await navigator.mediaDevices.getUserMedia({audio:true})
+ audioRecorder = new MediaRecorder(stream);
+ audioRecorder.ondataavailable = (evt)=>{
+    audioBox.push(evt.data);
+ }
+ audioRecorder.onstop = () => {
+
+ }
+ audioBox = [];
+ audioRecorder.start();
+ console.log("Yozish boshlandi");
+ 
+
+})
+
+elAudioBtn.addEventListener("mouseup" ,()=>{
+    audioRecorder.stop()
+   audioRecorder.onstop = ()=>{
+    const allAudio = new Blob(audioBox, {type: "audio/mp3 "})
+    const audioUrl = URL.createObjectURL(allAudio)
+     
+     let date = new Date()
+    let hour = date.getHours()
+    let minutes = date.getMinutes()
+    const Time  = `${hour}:${minutes}`
+   const newData = {
+    id: messageList[messageList.length -1]?.id ? messageList[messageList.length -1]?.id + 1 : 1,
+    audio:audioUrl,
+    content:"evt.target.message.value",
+    creatAt:Time,
+   }
+   messageList.push(newData)
+renderMessage(messageList , elList)
+// set("message" , messageList)
+   }
+})
+
+//============ end Audio rec
+
+
+
+
+
+
+
+
+//============ start Audio rec
+
+
+elVideoBtn.addEventListener("mousedown" , async ()=>{
+    const stream  = await navigator.mediaDevices.getUserMedia({video:true ,audio:true})
+    
+    videoPrev.srcObject = stream;
+    videoPrev.classList.remove("hidden")
+    videoRec = new MediaRecorder(stream)
+    videoRec.ondataavailable = (evt)=>{
+        videBox.push(evt.data)
+    }
+    
+    videBox = [];
+    videoRec.start()
+    console.log("video yozish boshlandi");
+})
+    
+
+elVideoBtn.addEventListener("mouseup" ,() =>{
+
+videoRec.stop()
+
+videoPrev.srcObject.getTracks().forEach(track => track.stop())
+videoPrev.classList.add("hidden")
+
+videoRec.onstop = ()=>{
+    const vidBlob = new Blob(videBox , {type: "video/mp4"})
+    const  videoUrl = URL.createObjectURL(vidBlob)
+    
+     let date = new Date()
+    let hour = date.getHours()
+    let minutes = date.getMinutes()
+    const Time  = `${hour}:${minutes}`
+   const newData = {
+    id: messageList[messageList.length -1]?.id ? messageList[messageList.length -1]?.id + 1 : 1,
+    audio:null,
+    video:videoUrl,
+    content:"evt.target.message.value",
+    creatAt:Time,
+   }
+   messageList.push(newData)
+   renderMessage(messageList , elList)
+   set("message" , messageList)
+   videBox = []
+}
+})
+//============ end Audio rec

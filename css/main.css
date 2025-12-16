@@ -28,3 +28,28 @@ body{
     right: -16px;
 
 }
+
+
+
+audio::-webkit-media-controls-panel {
+    background-color: #77cf8cff;
+    border: none;
+}
+audio{
+    border: none;
+}
+audio::-webkit-media-controls-current-time-display , audio::-webkit-media-controls-time-remaining-display{
+   color: green;
+}
+audio::-webkit-media-controls-timeline{
+    color: white;
+}
+audio::-webkit-media-controls-volume-slider{
+    color: green;
+}
+/*
+Source - https://stackoverflow.com/a
+Posted by methodofaction, modified by community. See post 'Timeline' for change history
+Retrieved 2025-12-16, License - CC BY-SA 2.5
+*/
+
